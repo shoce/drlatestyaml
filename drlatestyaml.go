@@ -28,7 +28,9 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const NL = "\n"
+const (
+	NL = "\n"
+)
 
 func log(msg string, args ...interface{}) {
 	const NL = "\n"
@@ -40,6 +42,8 @@ func log(msg string, args ...interface{}) {
 }
 
 var (
+	DEBUG bool
+
 	KeyPrefix        string
 	KeyPrefixReplace string
 
@@ -151,7 +155,9 @@ func main() {
 	}
 
 	for imagename, imageurl := range names {
-		//log("DEBUG url: %s", imageurl)
+		if DEBUG {
+			log("DEBUG url: %s", imageurl)
+		}
 		var err error
 		imagetag := ""
 
@@ -168,7 +174,9 @@ func main() {
 		RegistryUrl := fmt.Sprintf("%s://%s", u.Scheme, u.Host)
 		//RegistryHost := u.Host
 		RegistryRepository := u.Path
-		//log("DEBUG registry:%s repository:%s", RegistryUrl, RegistryRepository)
+		if DEBUG {
+			log("DEBUG registry:%s repository:%s", RegistryUrl, RegistryRepository)
+		}
 		r := registry.NewInsecure(RegistryUrl, RegistryUsername, RegistryPassword)
 		r.Logf = registry.Quiet
 
@@ -188,7 +196,9 @@ func main() {
 
 		imagenamereplace := KeyPrefixReplace + strings.TrimPrefix(imagename, KeyPrefix)
 		tags[imagenamereplace] = imagetag
-		//log("DEBUG tag: %s", imagetag)
+		if DEBUG {
+			log("DEBUG tag: %s", imagetag)
+		}
 	}
 
 	if len(tags) > 0 {
