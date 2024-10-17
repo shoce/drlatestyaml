@@ -182,8 +182,8 @@ func main() {
 
 		imagetags, err := r.Tags(RegistryRepository)
 		if err != nil {
-			log("ERROR %s: %v list tags: %v", imagename, imageurl, err)
-			os.Exit(1)
+			log("WARNING %s: %v list tags: %v", imagename, imageurl, err)
+			continue
 		}
 
 		sort.Sort(Versions(imagetags))
