@@ -50,25 +50,25 @@ var (
 func init() {
 	KeyPrefix = os.Getenv("KeyPrefix")
 	if KeyPrefix == "" {
-		log("error: KeyPrefix env var empty")
+		log("ERROR KeyPrefix env var empty")
 		os.Exit(1)
 	}
 	KeyPrefixReplace = os.Getenv("KeyPrefixReplace")
 	if KeyPrefixReplace == "" {
-		log("error: KeyPrefixReplace env var empty")
+		log("ERROR KeyPrefixReplace env var empty")
 		os.Exit(1)
 	}
 
 	RegistryUsername = os.Getenv("RegistryUsername")
 	/*
 		if RegistryUsername == "" {
-			log("warning: RegistryUsername env var empty")
+			log("WARNING RegistryUsername env var empty")
 		}
 	*/
 	RegistryPassword = os.Getenv("RegistryPassword")
 	/*
 		if RegistryPassword == "" {
-			log("warning: RegistryPassword env var empty")
+			log("WARNING RegistryPassword env var empty")
 		}
 	*/
 }
@@ -124,14 +124,14 @@ func main() {
 	for _, fpath := range fpaths {
 		f, err := os.Open(fpath)
 		if err != nil {
-			log("error: os.Open %v: %v", fpath, err)
+			log("ERROR os.Open %v: %v", fpath, err)
 			os.Exit(1)
 		}
 		defer f.Close()
 
 		fdecoder := yaml.NewDecoder(bufio.NewReader(f))
 		if err := fdecoder.Decode(&fmap); err != nil {
-			log("error: yaml.Decoder.Decode %v: %v", fpath, err)
+			log("ERROR yaml.Decoder.Decode %v: %v", fpath, err)
 			os.Exit(1)
 		}
 		f.Close()
@@ -151,7 +151,7 @@ func main() {
 	}
 
 	for imagename, imageurl := range names {
-		//log("url: %s", imageurl)
+		//log("DEBUG url: %s", imageurl)
 		var err error
 		imagetag := ""
 
@@ -161,20 +161,20 @@ func main() {
 
 		var u *url.URL
 		if u, err = url.Parse(imageurl); err != nil {
-			log("error: %s: %v url parse: %v", imagename, imageurl, err)
+			log("ERROR %s: %v url parse: %v", imagename, imageurl, err)
 			os.Exit(1)
 		}
 
 		RegistryUrl := fmt.Sprintf("%s://%s", u.Scheme, u.Host)
 		//RegistryHost := u.Host
 		RegistryRepository := u.Path
-		//log("registry:%s repository:%s", RegistryUrl, RegistryRepository)
+		//log("DEBUG registry:%s repository:%s", RegistryUrl, RegistryRepository)
 		r := registry.NewInsecure(RegistryUrl, RegistryUsername, RegistryPassword)
 		r.Logf = registry.Quiet
 
 		imagetags, err := r.Tags(RegistryRepository)
 		if err != nil {
-			log("error: %s: %v list tags: %v", imagename, imageurl, err)
+			log("ERROR %s: %v list tags: %v", imagename, imageurl, err)
 			os.Exit(1)
 		}
 
@@ -188,13 +188,13 @@ func main() {
 
 		imagenamereplace := KeyPrefixReplace + strings.TrimPrefix(imagename, KeyPrefix)
 		tags[imagenamereplace] = imagetag
-		//log("tag: %s", imagetag)
+		//log("DEBUG tag: %s", imagetag)
 	}
 
 	if len(tags) > 0 {
 		err = yaml.NewEncoder(os.Stdout).Encode(tags)
 		if err != nil {
-			log("error: yaml.Encoder.Encode: %v", err)
+			log("ERROR yaml.Encoder.Encode: %v", err)
 			os.Exit(1)
 		}
 	}
