@@ -159,6 +159,7 @@ func main() {
 			log("DEBUG url: %s", imageurl)
 		}
 		if imageurl == "" {
+			log("WARNING %s value is empty", imagename)
 			continue
 		}
 
