@@ -158,6 +158,10 @@ func main() {
 		if DEBUG {
 			log("DEBUG url: %s", imageurl)
 		}
+		if imageurl == "" {
+			continue
+		}
+
 		var err error
 		imagetag := ""
 
