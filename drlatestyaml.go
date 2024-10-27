@@ -151,12 +151,12 @@ func main() {
 			os.Exit(1)
 		}
 
-		sort.Sort(Versions(imagetags))
-
 		if len(imagetags) > 0 {
+			sort.Sort(Versions(imagetags))
 			imagetag = imagetags[len(imagetags)-1]
 		} else {
-			imagetag = "latest"
+			log("ERROR %s: %v no tags", imagename, imageurl)
+			os.Exit(1)
 		}
 
 		imagenamereplace := KeyPrefixReplace + strings.TrimPrefix(imagename, KeyPrefix)
