@@ -32,15 +32,6 @@ const (
 	NL = "\n"
 )
 
-func log(msg string, args ...interface{}) {
-	const NL = "\n"
-	if len(args) == 0 {
-		fmt.Fprint(os.Stderr, msg+NL)
-	} else {
-		fmt.Fprintf(os.Stderr, msg+NL, args...)
-	}
-}
-
 var (
 	DEBUG bool
 
@@ -75,37 +66,6 @@ func init() {
 			log("WARNING RegistryPassword env var empty")
 		}
 	*/
-}
-
-type Versions []string
-
-func (vv Versions) Len() int {
-	return len(vv)
-}
-
-func (vv Versions) Less(i, j int) bool {
-	v1, v2 := vv[i], vv[j]
-	v1s := strings.Split(v1, ".")
-	v2s := strings.Split(v2, ".")
-	if len(v1s) < len(v2s) {
-		return true
-	} else if len(v1s) > len(v2s) {
-		return false
-	}
-	for e := 0; e < len(v1s); e++ {
-		d1, _ := strconv.Atoi(v1s[e])
-		d2, _ := strconv.Atoi(v2s[e])
-		if d1 < d2 {
-			return true
-		} else if d1 > d2 {
-			return false
-		}
-	}
-	return false
-}
-
-func (vv Versions) Swap(i, j int) {
-	vv[i], vv[j] = vv[j], vv[i]
 }
 
 func main() {
@@ -156,7 +116,7 @@ func main() {
 
 	for imagename, imageurl := range names {
 		if DEBUG {
-			log("DEBUG url: %s", imageurl)
+			log("DEBUG %s: %v", imagename, imageurl)
 		}
 		if imageurl == "" {
 			log("WARNING %s value is empty", imagename)
@@ -202,7 +162,7 @@ func main() {
 		imagenamereplace := KeyPrefixReplace + strings.TrimPrefix(imagename, KeyPrefix)
 		tags[imagenamereplace] = imagetag
 		if DEBUG {
-			log("DEBUG tag: %s", imagetag)
+			log("DEBUG %s: %v tag: %s", imagename, imageurl, imagetag)
 		}
 	}
 
@@ -214,4 +174,43 @@ func main() {
 		}
 	}
 
+}
+
+func log(msg string, args ...interface{}) {
+	if len(args) == 0 {
+		fmt.Fprint(os.Stderr, msg+NL)
+	} else {
+		fmt.Fprintf(os.Stderr, msg+NL, args...)
+	}
+}
+
+type Versions []string
+
+func (vv Versions) Len() int {
+	return len(vv)
+}
+
+func (vv Versions) Less(i, j int) bool {
+	v1, v2 := vv[i], vv[j]
+	v1s := strings.Split(v1, ".")
+	v2s := strings.Split(v2, ".")
+	if len(v1s) < len(v2s) {
+		return true
+	} else if len(v1s) > len(v2s) {
+		return false
+	}
+	for e := 0; e < len(v1s); e++ {
+		d1, _ := strconv.Atoi(v1s[e])
+		d2, _ := strconv.Atoi(v2s[e])
+		if d1 < d2 {
+			return true
+		} else if d1 > d2 {
+			return false
+		}
+	}
+	return false
+}
+
+func (vv Versions) Swap(i, j int) {
+	vv[i], vv[j] = vv[j], vv[i]
 }
