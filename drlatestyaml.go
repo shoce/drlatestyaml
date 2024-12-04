@@ -4,7 +4,7 @@ GoFmt
 GoBuildNull
 GoBuild
 
-go get -u -a -v
+go get -u -v
 go mod tidy
 
 TODO:
@@ -43,11 +43,16 @@ var (
 )
 
 func init() {
+	if os.Getenv("DEBUG") != "" {
+		DEBUG = true
+	}
+
 	KeyPrefix = os.Getenv("KeyPrefix")
 	if KeyPrefix == "" {
 		log("ERROR KeyPrefix env var empty")
 		os.Exit(1)
 	}
+
 	KeyPrefixReplace = os.Getenv("KeyPrefixReplace")
 	if KeyPrefixReplace == "" {
 		log("ERROR KeyPrefixReplace env var empty")
@@ -60,6 +65,7 @@ func init() {
 			log("WARNING RegistryUsername env var empty")
 		}
 	*/
+
 	RegistryPassword = os.Getenv("RegistryPassword")
 	/*
 		if RegistryPassword == "" {
