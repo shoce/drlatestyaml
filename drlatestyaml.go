@@ -1,15 +1,14 @@
 /*
 
+GoGet
 GoFmt
 GoBuildNull
 GoBuild
 
-go get -u -v
-go mod tidy
-
 TODO:
 https://pkg.go.dev/github.com/regclient/regclient
 https://pkg.go.dev/github.com/google/go-containerregistry
+
 */
 
 package main
@@ -60,14 +59,11 @@ func init() {
 	}
 
 	RegistryUsername = os.Getenv("RegistryUsername")
+	RegistryPassword = os.Getenv("RegistryPassword")
 	/*
 		if RegistryUsername == "" {
 			log("WARNING RegistryUsername env var empty")
 		}
-	*/
-
-	RegistryPassword = os.Getenv("RegistryPassword")
-	/*
 		if RegistryPassword == "" {
 			log("WARNING RegistryPassword env var empty")
 		}
